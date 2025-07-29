@@ -1,0 +1,38 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "Inv_InventoryComponent.generated.h"
+
+class UInv_InventoryBase;
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
+class INVENTORYSYSTEM_API UInv_InventoryComponent : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:	
+	UInv_InventoryComponent();
+
+	void ToggleInventoryMenu();
+protected:
+	virtual void BeginPlay() override;
+
+private:	
+
+	TWeakObjectPtr<APlayerController> OwningController;
+
+	UPROPERTY()
+	TObjectPtr<UInv_InventoryBase> InventoryMenu;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_InventoryBase> InventoryMenuClass;
+	
+	bool bInventoryOpen;
+
+	void OpenInventoryMenu();
+
+	void CloseInventoryMenu();
+
+	void ConstructInventory();
+
+};
