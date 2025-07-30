@@ -53,8 +53,12 @@ void AInv_PlayerController::SetupInputComponent()
 
 void AInv_PlayerController::PrimaryInteract()
 {
-	UE_LOG(LogTemp, Log, TEXT("Primary Interact"))
-
+	//UE_LOG(LogTemp, Log, TEXT("Primary Interact"))
+	if (!CurrentActor.IsValid()) return;
+	UInv_ItemComponent* ItemComp = CurrentActor->GetComponentByClass<UInv_ItemComponent>();
+	
+	if (!IsValid(ItemComp) || !InventoryComponent.IsValid()) return;
+	InventoryComponent->TryAddItem(ItemComp);
 }
 
 void AInv_PlayerController::ToggleInventory()
