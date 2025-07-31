@@ -7,9 +7,6 @@
 #include "Items/Manifest/Inv_ItemManifest.h"
 #include "Inv_InventoryItem.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class INVENTORYSYSTEM_API UInv_InventoryItem : public UObject
 {
@@ -28,3 +25,13 @@ private:
 	UPROPERTY(VisibleAnywhere, meta=(BaseStruct = "/Script/InventorySystem.Inv_ItemManifest"), Replicated, Category="Inventory")
 	FInstancedStruct ItemManifest;
 };
+
+
+template<typename FragmentType>
+const FragmentType* GetFragment(const UInv_InventoryItem* Item, const FGameplayTag& Tag)
+{
+	if (!IsValid(Item)) return nullptr;
+
+	const FInv_ItemManifest& Manifest = Item->GetItemManifest();
+	return Manifest.GetFragmentOfTypeWithTag<FragmentType>(Tag);
+}
