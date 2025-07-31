@@ -1,5 +1,5 @@
 ﻿#include "Items/Manifest/Inv_ItemManifest.h"
-
+#include "Items/Fragments/Inv_ItemFragment.h"
 #include "Items/Inv_InventoryItem.h"
 
 UInv_InventoryItem* FInv_ItemManifest::Manifest(UObject* NewOuter)
