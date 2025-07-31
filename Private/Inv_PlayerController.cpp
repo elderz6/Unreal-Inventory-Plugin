@@ -37,7 +37,7 @@ void AInv_PlayerController::BeginPlay()
 
 	InventoryComponent = FindComponentByClass<UInv_InventoryComponent>();
 
-	CreateHUDWidget();
+	CreateHUDWidget();;
 
 }
 

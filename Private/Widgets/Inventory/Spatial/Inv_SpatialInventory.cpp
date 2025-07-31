@@ -12,6 +12,11 @@ void UInv_SpatialInventory::NativeOnInitialized()
 	Button_Craftables->OnClicked.AddDynamic(this, &ThisClass::ShowCraftables);
 }
 
+FInv_SlotAvailabilityResult UInv_SpatialInventory::HasRoomForItem(UInv_ItemComponent* ItemComponent) const
+{
+	return Super::HasRoomForItem(ItemComponent);
+}
+
 void UInv_SpatialInventory::ShowEquippables()
 {
 	SetActiveGrid(Grid_Equippables, Button_Equippables);
@@ -20,13 +25,11 @@ void UInv_SpatialInventory::ShowEquippables()
 void UInv_SpatialInventory::ShowConsumables()
 {
 	SetActiveGrid(Grid_Consumables, Button_Consumables);
-
 }
 
 void UInv_SpatialInventory::ShowCraftables()
 {
 	SetActiveGrid(Grid_Craftables, Button_Craftables);
-
 }
 
 void UInv_SpatialInventory::SetActiveGrid(UInv_InventoryGrid* Grid, UButton* Button)

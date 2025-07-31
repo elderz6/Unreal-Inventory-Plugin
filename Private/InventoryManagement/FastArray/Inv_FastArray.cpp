@@ -1,5 +1,5 @@
 ﻿#include "InventoryManagement/FastArray/Inv_FastArray.h"
-
+#include "Items/Components/Inv_ItemComponent.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Inv_InventoryItem.h"
 
@@ -48,9 +48,21 @@ UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_InventoryItem* Item)
 	return Item;
 }
 
-UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_InventoryComponent* ItemComponent)
+UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_ItemComponent* ItemComponent)
 {
-	return nullptr;
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+	check(OwningActor->HasAuthority());
+
+	UInv_InventoryComponent* InventoryComponent = Cast<UInv_InventoryComponent>(OwnerComponent);
+	if (!IsValid(InventoryComponent))	return nullptr;
+
+	FInv_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
+	NewEntry.Item = ItemComponent->GetItemManifest().Manifest(OwningActor);
+
+	InventoryComponent->AddRepSubObj(NewEntry.Item);
+	MarkItemDirty(NewEntry);
+	return NewEntry.Item;
 }
 
 void FInv_InventoryFastArray::RemoveEntry(UInv_InventoryItem* Item)

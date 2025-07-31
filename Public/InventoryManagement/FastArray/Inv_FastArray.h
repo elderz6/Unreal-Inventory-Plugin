@@ -43,7 +43,7 @@ struct FInv_InventoryFastArray : public FFastArraySerializer
 	};
 
 	UInv_InventoryItem* AddEntry(UInv_InventoryItem* Item);
-	UInv_InventoryItem* AddEntry(UInv_InventoryComponent* ItemComponent);
+	UInv_InventoryItem* AddEntry(UInv_ItemComponent* ItemComponent);
 	void RemoveEntry(UInv_InventoryItem* Item);
 	
 private:
