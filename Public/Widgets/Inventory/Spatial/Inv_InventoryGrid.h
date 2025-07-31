@@ -6,6 +6,8 @@
 
 #include "Inv_InventoryGrid.generated.h"
 
+struct FInv_ItemManifest;
+class UInv_ItemComponent;
 class UInv_InventoryComponent;
 class UInv_GridSlot;
 class UCanvasPanel;
@@ -20,8 +22,8 @@ public:
 
 	UFUNCTION()
 	void AddItem(UInv_InventoryItem* Item);
-	
-	
+
+	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_ItemComponent* ItemComponent);
 	FORCEINLINE EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
 
 protected:
@@ -53,6 +55,9 @@ private:
 	float TileSize;
 
 	void ConstructGrid();
+
+	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
+	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
 
 	bool MatchesCategory(const UInv_InventoryItem* Item) const;
 };
