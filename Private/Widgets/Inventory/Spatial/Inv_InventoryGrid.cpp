@@ -1,8 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Widgets/Inventory/Spatial/Inv_InventoryGrid.h"
-
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
@@ -13,6 +9,7 @@
 #include "Items/Fragments/Inv_FragmentTags.h"
 #include "Items/Fragments/Inv_ItemFragment.h"
 #include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
+#include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 #include "Widgets/Utils/Inv_WidgetUtils.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
@@ -36,15 +33,52 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 
 void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
 {
-	//get grid fragment
+	for (const auto& Availability : Result.SlotAvailabilities)
+	{
+		AddItemAtIndex(NewItem, Availability.Index, Result.bIsStackable, Availability.AmountToFill);
+	}
+
+	//store widget
+}
+
+FVector2d UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const
+{
+	const float IconTileWidth = TileSize - (GridFragment->GetGridPadding() * 2);
+	FVector2d IconSize = GridFragment->GetGridSize() * IconTileWidth;
+	return IconSize;
+}
+
+UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item, const bool bStackable,
+	const int32 StackAmount, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment,
+	const int32 Index)
+{
+	UInv_SlottedItem* SlottedItem =  CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass);
+	SlottedItem->SetInventoryItem(Item);
+	SetSlottedItemImage(SlottedItem, GridFragment, ImageFragment);
+	SlottedItem->SetGridIndex(Index);
+
+	return SlottedItem;
+}
+
+void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment,
+                                             const FInv_ImageFragment* ImageFragment) const
+{
+	FSlateBrush Brush;
+	Brush.SetResourceObject(ImageFragment->GetIcon());
+	Brush.DrawAs = ESlateBrushDrawType::Image;
+	Brush.ImageSize = GetDrawSize(GridFragment);
+	SlottedItem->SetImageBrush(Brush);
+}
+
+void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* NewItem, const int32 Index, const bool bStackable,
+	const int32 StackAmount)
+{
 	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
 	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(NewItem, FragmentTags::IconFragment);
 	if (!GridFragment || !ImageFragment) return;
+
+	UInv_SlottedItem* SlottedItem = CreateSlottedItem(NewItem, bStackable, StackAmount, GridFragment, ImageFragment, Index);
 	
-	
-	//get image fragment
-	//create widget to add to grid
-	//store widget
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
@@ -99,4 +133,3 @@ bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item) const
 {
 	return Item->GetItemManifest().GetItemCategory() == ItemCategory;
 }
-
