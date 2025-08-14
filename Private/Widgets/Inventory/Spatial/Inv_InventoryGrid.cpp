@@ -78,7 +78,21 @@ void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* NewItem, const int32
 	if (!GridFragment || !ImageFragment) return;
 
 	UInv_SlottedItem* SlottedItem = CreateSlottedItem(NewItem, bStackable, StackAmount, GridFragment, ImageFragment, Index);
-	
+	AddSlottedItemToCanvas(Index, GridFragment, SlottedItem);
+	SlottedItems.Add(Index, SlottedItem);
+}
+
+void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 index, const FInv_GridFragment* GridFragment,
+	UInv_SlottedItem* SlottedItem) const
+{
+	CanvasPanel->AddChild(SlottedItem);
+	UCanvasPanelSlot* CanvasSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(SlottedItem);
+	CanvasSlot->SetSize(GetDrawSize(GridFragment));
+
+	const FVector2D DrawPos = UInv_WidgetUtils::GetPositionFromIndex(index, Columns) * TileSize;
+	const FVector2D DrawWithPadding = DrawPos + FVector2D(GridFragment->GetGridPadding());
+
+	CanvasSlot->SetPosition(DrawWithPadding);
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)

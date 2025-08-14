@@ -51,6 +51,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	TSubclassOf<UInv_SlottedItem> SlottedItemClass;
 
+	UPROPERTY()
+	TMap<uint32, TObjectPtr<UInv_SlottedItem>> SlottedItems;
+
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	int32 Rows;
 
@@ -77,4 +80,5 @@ private:
 		);
 	void SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment) const;
 	void AddItemAtIndex(UInv_InventoryItem* NewItem, const int32 Index, const bool bStackable, const int32 StackAmount);
+	void AddSlottedItemToCanvas(const int32 index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const;
 };
