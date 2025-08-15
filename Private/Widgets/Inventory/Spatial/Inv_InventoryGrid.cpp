@@ -28,7 +28,6 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
 
 	AddItemToIndices(Result, Item);
-	//Create widget to show icon and add to grid
 }
 
 void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
@@ -36,9 +35,8 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 	for (const auto& Availability : Result.SlotAvailabilities)
 	{
 		AddItemAtIndex(NewItem, Availability.Index, Result.bIsStackable, Availability.AmountToFill);
+		UpdateGridSlots(NewItem, Availability.Index);
 	}
-
-	//store widget
 }
 
 FVector2d UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const
@@ -93,6 +91,21 @@ void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 index, const FInv_Gr
 	const FVector2D DrawWithPadding = DrawPos + FVector2D(GridFragment->GetGridPadding());
 
 	CanvasSlot->SetPosition(DrawWithPadding);
+}
+
+void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index)
+{
+	check(GridSlots.IsValidIndex(Index));
+
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
+	if (!GridFragment) return;
+
+	const FIntPoint Dimensions = GridFragment ? GridFragment->GetGridSize() : FIntPoint(1, 1);
+
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns, [](UInv_GridSlot* GridSlot)
+	{
+		GridSlot->SetOccupiedTexture();
+	});
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
