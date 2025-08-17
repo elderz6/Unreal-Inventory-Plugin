@@ -24,12 +24,12 @@ public:
 	static EInv_ItemCategory GetItemCategoryFromItemComponent(UInv_ItemComponent* ItemComponent);
 
 	template<typename T, typename FuncT>
-	static void ForEach2D(TArray<T>& Array, int32 Index, const FIntPoint& Range2D, int32 GridColumns, const FuncT& Function);
+	static void ForEach2D(const TArray<T>& Array, int32 Index, const FIntPoint& Range2D, int32 GridColumns, const FuncT& Function);
 };
 
 
 template<typename T, typename FuncT>
-void UInv_InventoryStatics::ForEach2D(TArray<T>& Array, int32 Index, const FIntPoint& Range2D, int32 GridColumns, const FuncT& Function)
+void UInv_InventoryStatics::ForEach2D(const TArray<T>& Array, int32 Index, const FIntPoint& Range2D, int32 GridColumns, const FuncT& Function)
 {
 	for (int32 j = 0; j < Range2D.Y; ++j)
 	{

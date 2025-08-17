@@ -81,5 +81,13 @@ private:
 	void SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment) const;
 	void AddItemAtIndex(UInv_InventoryItem* NewItem, const int32 Index, const bool bStackable, const int32 StackAmount);
 	void AddSlottedItemToCanvas(const int32 index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const;
-	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index);
+	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index, bool bStackable, const int32 StackAmount);
+	bool IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const;
+	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot,
+		const FIntPoint& Dimensions,
+		const TSet<int32>& CheckedIndices,
+		TSet<int32>& PossiblyClaimed
+		) const;
+	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
+	bool CheckSlotConstraints(const UInv_GridSlot* SubGridSlot) const;
 };

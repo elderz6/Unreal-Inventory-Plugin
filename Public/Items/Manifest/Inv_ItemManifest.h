@@ -23,6 +23,10 @@ public:
 	requires std::derived_from<FragmentType, FInv_ItemFragment>
 	const FragmentType* GetFragmentOfTypeWithTag(const FGameplayTag& FragmentTag) const;
 
+	template<typename FragmentType>
+	requires std::derived_from<FragmentType, FInv_ItemFragment>
+	const FragmentType* GetFragmentOfType() const;
+
 protected:
 
 private:
@@ -46,6 +50,20 @@ const FragmentType* FInv_ItemManifest::GetFragmentOfTypeWithTag(const FGameplayT
 		if(const FragmentType* FragmentPtr = Fragment.GetPtr<FragmentType>())
 		{
 			if (!FragmentPtr->GetFragmentTag().MatchesTagExact(FragmentTag)) continue;
+			return FragmentPtr;
+		}
+	}
+	return nullptr;
+}
+
+template<typename FragmentType>
+requires std::derived_from<FragmentType, FInv_ItemFragment>
+const FragmentType* FInv_ItemManifest::GetFragmentOfType() const
+{
+	for (const TInstancedStruct<FInv_ItemFragment>& Fragment : Fragments)
+	{
+		if(const FragmentType* FragmentPtr = Fragment.GetPtr<FragmentType>())
+		{
 			return FragmentPtr;
 		}
 	}
